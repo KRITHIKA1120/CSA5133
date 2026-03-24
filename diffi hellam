@@ -1,0 +1,29 @@
+# Diffie-Hellman Key Exchange
+
+# Public values
+p = 23   # Prime number
+g = 5    # Generator
+
+# Private keys (chosen secretly)
+a = 6    # Alice's private key
+b = 15   # Bob's private key
+
+# Compute public values
+A = (g ** a) % p
+B = (g ** b) % p
+
+# Exchange and compute shared secret
+# Alice computes
+K_alice = (B ** a) % p
+
+# Bob computes
+K_bob = (A ** b) % p
+
+print("Public values:")
+print("p =", p, ", g =", g)
+
+print("\nAlice sends A =", A)
+print("Bob sends B =", B)
+
+print("\nShared Secret Key (Alice):", K_alice)
+print("Shared Secret Key (Bob):", K_bob)
