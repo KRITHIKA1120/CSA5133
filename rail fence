@@ -1,0 +1,76 @@
+import numpy as np
+
+# Function to convert text to numbers (a=0, b=1, ..., z=25)
+def text_to_numbers(text):
+    return [ord(char) - ord('a') for char in text]
+
+# Function to convert numbers back to text
+def numbers_to_text(numbers):
+    return ''.join([chr(num + ord('a')) for num in numbers])
+
+# Function to encrypt
+def encrypt(plain_text, key_matrix):
+    plain_text = plain_text.replace(" ", "").lower()
+    
+    # Padding if odd length
+    if len(plain_text) % 2 != 0:
+        plain_text += 'x'
+    
+    result = ""
+    
+    for i in range(0, len(plain_text), 2):
+        pair = plain_text[i:i+2]
+        vector = np.array(text_to_numbers(pair))
+        
+        encrypted_vector = np.dot(key_matrix, vector) % 26
+        result += numbers_to_text(encrypted_vector)
+    
+    return result
+
+# Function to find modular inverse of determinant
+def mod_inverse(a, m):
+    for i in range(1, m):
+        if (a * i) % m == 1:
+            return i
+    return None
+
+# Function to decrypt
+def decrypt(cipher_text, key_matrix):
+    det = int(np.round(np.linalg.det(key_matrix)))
+    det = det % 26
+    
+    inv_det = mod_inverse(det, 26)
+    
+    if inv_det is None:
+        raise ValueError("Key matrix is not invertible")
+    
+    # Inverse of 2x2 matrix
+    inv_matrix = np.array([[key_matrix[1][1], -key_matrix[0][1]],
+                           [-key_matrix[1][0], key_matrix[0][0]]])
+    
+    inv_matrix = (inv_det * inv_matrix) % 26
+    
+    result = ""
+    
+    for i in range(0, len(cipher_text), 2):
+        pair = cipher_text[i:i+2]
+        vector = np.array(text_to_numbers(pair))
+        
+        decrypted_vector = np.dot(inv_matrix, vector) % 26
+        result += numbers_to_text(decrypted_vector)
+    
+    return result
+
+
+# Example usage
+key_matrix = np.array([[3, 3],
+                       [2, 5]])
+
+message = "hello"
+
+encrypted = encrypt(message, key_matrix)
+decrypted = decrypt(encrypted, key_matrix)
+
+print("Original:", message)
+print("Encrypted:", encrypted)
+print("Decrypted:", decrypted)
