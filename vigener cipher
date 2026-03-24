@@ -1,0 +1,58 @@
+import string
+
+# Generate repeated key
+def generate_key(text, key):
+    key = key.lower()
+    key_extended = ""
+    
+    for i in range(len(text)):
+        if text[i].isalpha():
+            key_extended += key[i % len(key)]
+        else:
+            key_extended += text[i]
+    
+    return key_extended
+
+
+# Encryption function
+def encrypt(text, key):
+    text = text.lower()
+    key = generate_key(text, key)
+    encrypted = ""
+    
+    for t, k in zip(text, key):
+        if t.isalpha():
+            shift = (ord(t) + ord(k) - 2 * ord('a')) % 26
+            encrypted += chr(shift + ord('a'))
+        else:
+            encrypted += t
+    
+    return encrypted
+
+
+# Decryption function
+def decrypt(cipher_text, key):
+    cipher_text = cipher_text.lower()
+    key = generate_key(cipher_text, key)
+    decrypted = ""
+    
+    for c, k in zip(cipher_text, key):
+        if c.isalpha():
+            shift = (ord(c) - ord(k)) % 26
+            decrypted += chr(shift + ord('a'))
+        else:
+            decrypted += c
+    
+    return decrypted
+
+
+# Example usage
+text = "hello world"
+key = "key"
+
+encrypted = encrypt(text, key)
+decrypted = decrypt(encrypted, key)
+
+print("Original:", text)
+print("Encrypted:", encrypted)
+print("Decrypted:", decrypted)
