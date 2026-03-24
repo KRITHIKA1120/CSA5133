@@ -1,0 +1,30 @@
+# Encryption
+def encrypt(text, shift):
+    result = ""
+    
+    for char in text:
+        if char.isalpha():
+            # Preserve case
+            base = ord('A') if char.isupper() else ord('a')
+            result += chr((ord(char) - base + shift) % 26 + base)
+        else:
+            result += char   # keep spaces, symbols
+    
+    return result
+
+
+# Decryption
+def decrypt(cipher_text, shift):
+    return encrypt(cipher_text, -shift)
+
+
+# Example usage
+text = "HELLO WORLD"
+shift = 3
+
+encrypted = encrypt(text, shift)
+decrypted = decrypt(encrypted, shift)
+
+print("Original:", text)
+print("Encrypted:", encrypted)
+print("Decrypted:", decrypted)
