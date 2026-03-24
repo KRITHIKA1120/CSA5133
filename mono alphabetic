@@ -1,0 +1,64 @@
+import string
+
+# Create mapping for encryption
+def create_cipher_map(key):
+    alphabet = string.ascii_lowercase
+    key = key.lower()
+    
+    # Remove duplicates from key
+    key_unique = ""
+    for char in key:
+        if char not in key_unique and char in alphabet:
+            key_unique += char
+    
+    # Fill remaining letters
+    remaining_letters = ""
+    for char in alphabet:
+        if char not in key_unique:
+            remaining_letters += char
+    
+    cipher_map = key_unique + remaining_letters
+    
+    return dict(zip(alphabet, cipher_map))
+
+
+# Encryption function
+def encrypt(text, key):
+    cipher_map = create_cipher_map(key)
+    encrypted = ""
+    
+    for char in text.lower():
+        if char in cipher_map:
+            encrypted += cipher_map[char]
+        else:
+            encrypted += char   # keep spaces/punctuation
+    
+    return encrypted
+
+
+# Decryption function
+def decrypt(cipher_text, key):
+    cipher_map = create_cipher_map(key)
+    reverse_map = {v: k for k, v in cipher_map.items()}
+    
+    decrypted = ""
+    
+    for char in cipher_text.lower():
+        if char in reverse_map:
+            decrypted += reverse_map[char]
+        else:
+            decrypted += char
+    
+    return decrypted
+
+
+# Example usage
+key = "security"
+message = "hello world"
+
+encrypted = encrypt(message, key)
+decrypted = decrypt(encrypted, key)
+
+print("Original:", message)
+print("Encrypted:", encrypted)
+print("Decrypted:", decrypted)
